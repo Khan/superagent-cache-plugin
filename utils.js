@@ -14,12 +14,16 @@ module.exports = {
       cleanParams = (props.pruneQuery) ? this.pruneObj(this.cloneObject(params), props.pruneQuery) : params;
       cleanOptions = (props.pruneHeader) ? this.pruneObj(this.cloneObject(options), props.pruneHeader, true) : options;
     }
-    return JSON.stringify({
+    var key = {
       method: req.method,
       uri: req.url,
       params: cleanParams || params || null,
       options: cleanOptions || options || null
-    });
+    };
+    if (props.pruneKey) {
+      key = props.pruneKey(key);
+    }
+    return JSON.stringify(key);
   },
 
   /**
@@ -166,6 +170,7 @@ module.exports = {
       prune: d.prune,
       pruneQuery: d.pruneQuery,
       pruneHeader: d.pruneHeader,
+      pruneKey: d.pruneKey,
       responseProp: d.responseProp,
       expiration: d.expiration,
       forceUpdate: d.forceUpdate,
